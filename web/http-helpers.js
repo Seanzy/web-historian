@@ -19,3 +19,5 @@ exports.serveAssets = function(res, asset, callback) {
 
 
 // As you progress, keep thinking about what helper functions you can put here!
+// One goal of this sprint is having you think about modularity; that is, breaking things up into nice manageable chunks. It also means making your functions a bit more abstract so they can work with a wide array of inputs. Writing easily maintainable and abstracted code is a critical skill in software engineering. To that end, a 'helper' file has been provided. Use it as much as possible for your abstracted helper functions so that your request handler file stays clean, readable and manageable.
+// 
