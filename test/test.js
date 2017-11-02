@@ -21,7 +21,7 @@ describe('server', function() {
       // just assume that if it contains an <input> tag its index.html
       request
         .get('/')
-        .expect(200, /<input/, done);
+        .expect(200, /<input/, done); //passing in done avoids false passes (done cb must be called for your async functions )
     });
   });
 
