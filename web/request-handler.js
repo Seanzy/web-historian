@@ -13,7 +13,7 @@ exports.handleRequest = function (req, res) {
       helpers.serveAssets(res, path.join(archive.paths.siteAssets, '/styles.css'));
     } // this else if allows the refresh to occur faster by serving styles.css (allowing it to load). 
   }
-  
+
   //res.end(archive.paths.list);
   
 };

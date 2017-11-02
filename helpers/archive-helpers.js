@@ -32,24 +32,56 @@ exports.readListOfUrls = function(callback) {
     }
     
     callback(data.split('\n'));
-    res.end();
     
   });   
 };
 
 exports.isUrlInList = function(url, callback) {
+  fs.readFile(exports.paths.list, 'utf8', (err, data) => {
+    if (err) {
+      throw err;
+    }
+    
+    var urlArray = data.split('\n');
+    var found = urlArray.indexOf(url) !== -1;
+    
+    // console.log(found);
+    callback(found); 
+  });
 };
 
 exports.addUrlToList = function(url, callback) {
+  //read the urls in file 
+  fs.readFile(exports.paths.list, 'utf8', (err, data) => {
+    if (err) {
+      throw err;
+    }
+    
+    //make array of urls
+    var urlArray = data.split('\n');
+    
+    //add given url 
+    urlArray.push(url);
+    
+    fs.writeFile(exports.paths.list, urlArray.join('\n'), callback);
+    
+  });
+  
 };
 
 exports.isUrlArchived = function(url, callback) {
+  
+
 };
 
 exports.downloadUrls = function(urls) {
 };
  
  /*
+ 
+ 
+ none of these helper functions needed res.end() because we want to end the request after all of our request actions have taken place
+ 
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
