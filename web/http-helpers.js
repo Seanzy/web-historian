@@ -17,7 +17,9 @@ exports.serveAssets = function(res, asset, callback) {
     if (err) {
       throw err;
     }
-    res.writeHead(200, exports.headers);
+    if (res.head !== undefined) {
+      res.writeHead(200, exports.headers);
+    }
     // console.log(exports.headers);
     res.end(data);
   });
