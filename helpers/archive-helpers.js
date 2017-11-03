@@ -26,17 +26,20 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
+// reads the urls from sites.txt and calls cb, passing in the array of urls
 exports.readListOfUrls = function(callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
     if (err) {
       throw err;
     }
+    var arr = data.split('\n');
     
-    callback(data.split('\n'));
+    callback(arr.slice(0, -1));
     
   });   
 };
 
+//checks if the url provided is in the array of urls
 exports.isUrlInList = function(url, callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
     if (err) {
@@ -51,6 +54,7 @@ exports.isUrlInList = function(url, callback) {
   });
 };
 
+//adds the url sites.txt if it's not in there
 exports.addUrlToList = function(url, callback) {
   //read the urls in file 
   fs.appendFile(exports.paths.list, url + '\n', (err) => {
@@ -59,21 +63,6 @@ exports.addUrlToList = function(url, callback) {
     }
     callback();
   });
-  // fs.readFile(exports.paths.list, 'utf8', (err, data) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-    
-  //   //make array of urls
-  //   var urlArray = data.split('\n');
-    
-  //   //add given url 
-  //   urlArray.push(url);
-    
-  //   fs.writeFile(exports.paths.list, urlArray.join('\n'), callback);
-    
-  // });
-  
 };
 
 exports.isUrlArchived = function(url, callback) {
@@ -95,20 +84,37 @@ exports.isUrlArchived = function(url, callback) {
 
 //takes the URLs from the sites.txt and creates files with those urls as names in sites folder. 
 exports.downloadUrls = function(urls) {
-  
-  for (var i = 0; i < urls.length; i++) {
-    fs.open(`${exports.paths.archivedSites}/${urls[i]}`, 'w', function (err, sites) {
+  console.log(urls);
+  var getRequest = function(url) {
+    fs.open(`${exports.paths.archivedSites}/${url}`, 'w', function (err, sites) {
       if (err) {
         throw err;
       }
       
-      // fs.write(sites, '<!-Test->n');
-      
+      //console.log(url);
+      https.get(`https://${url}`, function(res) {
+        var body = '';
+        res.on('data', (chunk) => {
+          body += chunk;
+        });
+        res.on('end', function() {
+          fs.write(sites, body, 'utf8');
+        });
+      });
     });  
-    
+  };
+  
+  for (var i = 0; i < urls.length; i++) {
+    getRequest(urls[i]);
   }
   
+  //giver me urls[0]
+  //pass urls[0] to an asynch function (which can take inputs)
+  // let that execute
+  
 };
+
+
  
  /*
  

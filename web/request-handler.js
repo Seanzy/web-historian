@@ -27,19 +27,37 @@ exports.handleRequest = function (req, res) {
     } 
   } else if (req.method === 'POST') {
     var body = '';
+    //archive.readListOfUrls(archive.downloadUrls);
     req.on('data', function(chunk) {
       body += chunk;
     });
     req.on('end', function() {
-      archive.addUrlToList(querystring.parse(body).url, function() {
-        res.writeHead(302, helpers.headers);
-        helpers.serveAssets(res, path.join(archive.paths.siteAssets, '/loading.html'));
-      });
+      console.log(querystring.parse(body).url);
+      var url = querystring.parse(body).url;
+      // if archived, serve asset
+      archive.isUrlArchived(url, function(bool) {
+        if (bool) {
+          helpers.serveAssets(res, path.join(archive.paths.archivedSites, '/', url));
+        } else { // if not archived, 
+          // if url not in list
+          archive.isUrlInList(url, function(bool) {
+            
+            if (!bool) {
+            //add url to list and redirect them to loading.html
+              archive.addUrlToList(url, function() {
+                res.writeHead(302, helpers.headers);
+                console.log(path.join(archive.paths.siteAssets, '/loading.html'));
+                helpers.serveAssets(res, path.join(archive.paths.siteAssets, '/loading.html'));
+              });
+            } else { 
+              //res.end();
+            }
+          });        
+        }
+      });      
     });
-    
   }
 
   //res.end(archive.paths.list);
   
 };
-
